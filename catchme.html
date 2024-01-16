@@ -12,9 +12,9 @@
     }
 
     #game-container {
-      margin: 50px auto;
-      position: relative;
+      margin: auto;
       height: 300px;
+      width: 300px;
     }
 
     #move-button {
@@ -34,36 +34,37 @@
       padding: 10px;
       font-size: 16px;
       cursor: pointer;
-      transition: 0.4s;
-      box-shadow: 0px 0px 15px  rgb(0, 183, 255);
-     }
+      transition: transform 0.2s;
+      box-shadow: 0px 0px 15px rgb(0, 183, 255);
+    }
   </style>
 </head>
 <body>
   <div id="game-container">
-    <button id="move-button" onmouseover="moveButton()" onclick="playVideo()">Catch Me!</button>
+    <button id="move-button" onmouseenter="moveButton()" onclick="playVideo()">Catch Me!</button>
   </div>
 
   <script>
     function moveButton() {
       const button = document.getElementById('move-button');
       const container = document.getElementById('game-container');
-      
+
       // Get the width and height of the button and the container
       const buttonWidth = button.offsetWidth;
       const buttonHeight = button.offsetHeight;
       const containerWidth = container.offsetWidth;
       const containerHeight = container.offsetHeight;
 
-      // Calculate new random position for the button
-      const newX = Math.floor(Math.random() * (containerWidth - buttonWidth));
-      const newY = Math.floor(Math.random() * (containerHeight - buttonHeight));
+      // Calculate new random position for the button, considering the container boundaries
+      const maxX = containerWidth - buttonWidth;
+      const maxY = containerHeight - buttonHeight;
 
-      // Set the new position for the button with a delay
-      setTimeout(() => {
-        button.style.left = newX + 'px';
-        button.style.top = newY + 'px';
-      }, 10); // 10 milliseconds delay
+      const newX = Math.min(Math.max(Math.floor(Math.random() * maxX), 0), maxX);
+      const newY = Math.min(Math.max(Math.floor(Math.random() * maxY), 0), maxY);
+
+      // Set the new position for the button
+      button.style.transition = 'transform 0.2s';
+      button.style.transform = `translate(${newX}px, ${newY}px)`;
     }
 
     function playVideo() {
@@ -72,7 +73,7 @@
       video.src = 'lv_0_20240115211213.mp4'; // Replace with your video URL
       video.controls = true;
       video.autoplay = true;
-      video.style.height = '500PX'; // Set the height of the video to 100%
+      video.style.height = '500px'; // Set the height of the video to 100%
 
       // Append the video element to the body
       document.body.appendChild(video);
@@ -92,6 +93,12 @@
         video.msRequestFullscreen();
       }
     }
+
+    // Move the button every 250 milliseconds
+    setInterval(moveButton, 250);
+
+    // Move the button when the cursor is on the button
+    document.getElementById('move-button').addEventListener('mouseenter', moveButton);
   </script>
 </body>
 </html>
